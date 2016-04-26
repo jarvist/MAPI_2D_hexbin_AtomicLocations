@@ -13,7 +13,10 @@ from IPython import embed #iPython magic for interactive session...
 
 # These be my files
 filelist=["C.dat", "I.dat", "Pb.dat", "C_symm.dat", "I_symm.dat", "Pb_symm.dat"]
-nbins=42
+
+# Settings
+nbins=42 # Number of histogram bins - in both X and Y I guess
+mincnt=1 # Minimum count before displaying. Set to 1 to get hex'es without a count to display as blank (white)
 
 # Suffix of _r reverses the colourmap
 # See: http://matplotlib.org/examples/color/colormaps_reference.html
@@ -32,7 +35,7 @@ for datafile in filelist:
     extent = [yedges[0], yedges[-1], xedges[0], xedges[-1]]
     
     if (yedges[-1]<1.0): # Bit of a hack - if the data appears to be bounded on [0,1], assume fractional
-        extent = [0,1,0,1] # Fractional coordinates .'. plot 0 to 1
+        extent = [0,1.0,0,1.0] # Fractional coordinates .'. plot 0 to 1
     if (yedges[-1]>5.0): # Worse hack - fixed unit cell, real space units
         extent = [0,12.57398,0,12.57398]
 
@@ -52,9 +55,14 @@ for datafile in filelist:
 # NOW WITH HEXBINS
 # extent = limits over which bins are calculate (consumate with axes)
 # mincnt = minimal count; below this histogram count hex-cell will be left blank (white)
-    plt.hexbin(data[:,1],data[:,2],gridsize=nbins,marginals=False,cmap=colourmap,extent=extent,mincnt=1)
-    plt.axis(extent)
-    plt.grid(True)
+    plt.hexbin(data[:,1],data[:,2],gridsize=nbins,marginals=False,cmap=colourmap,extent=extent,mincnt=mincnt)
+    plt.axis(extent) 
+
+# Generate tick marks across range
+    major_ticks = numpy.linspace(0,extent[1],num=4+1) # num=n+1; where n= number of divisions in range
+    ax.set_xticks(major_ticks)
+    ax.set_yticks(major_ticks)
+    plt.grid(True) # Add a dotted-line grid
 
 # Or standard 2D histogram with numpy histogrammed data (see above)
 #    plt.imshow(H,extent=extent,interpolation='nearest')
