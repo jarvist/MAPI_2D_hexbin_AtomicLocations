@@ -20,5 +20,6 @@ BEGIN {
     }
 
 #    print $1,pos[1],pos[2],pos[3]   # XYZ output angstrom
+#    print unitcell
     print $1,pos[1]/unitcell,pos[2]/unitcell,pos[3]/unitcell # Fractional coordinates
 }

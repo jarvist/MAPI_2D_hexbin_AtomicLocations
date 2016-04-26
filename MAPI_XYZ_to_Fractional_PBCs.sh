@@ -5,12 +5,12 @@
 for f 
 do
 
-grep Pb "${f}" > Pb.dat
-grep I "${f}" > I.dat
+grep "Pb\|Sn\|Ge" "${f}" > HeavyMetal.dat
+grep "I\|Br\|Cl" "${f}" > Halogen.dat
 grep " C " "${f}" > C.dat
 
-cat Pb.dat | ./XYZ_to_Fractional_PBCs.awk > Pb_symm.dat
-cat I.dat | ./XYZ_to_Fractional_PBCs.awk > I_symm.dat
+cat HeavyMetal.dat | ./XYZ_to_Fractional_PBCs.awk > HeavyMetal_symm.dat
+cat Halogen.dat | ./XYZ_to_Fractional_PBCs.awk > Halogen_symm.dat
 cat C.dat | ./XYZ_to_Fractional_PBCs.awk > C_symm.dat
 
 done

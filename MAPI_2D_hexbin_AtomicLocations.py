@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 
 import numpy
 import math
-from IPython import embed #iPython magic for interactive session...
+import sys
+#from IPython import embed #iPython magic for interactive session...
 
 # These be my files
-filelist=["C.dat", "I.dat", "Pb.dat", "C_symm.dat", "I_symm.dat", "Pb_symm.dat"]
+filelist=["C.dat", "Halogen.dat", "HeavyMetal.dat", "C_symm.dat", "Halogen_symm.dat", "HeavyMetal_symm.dat"]
 
 # Settings
 nbins=42 # Number of histogram bins - in both X and Y I guess
@@ -24,10 +25,22 @@ mincnt=1 # Minimum count before displaying. Set to 1 to get hex'es without a cou
 #colourmap=plt.cm.cubehelix_r
 colourmap=plt.cm.Spectral_r
 
+# Set unitcell (cubic) size; for plotting limits, axes
+if (len(sys.argv)>1):
+    unitcell=2.0*float(sys.argv[1]) # First non-script name argument
+else:
+    unitcell=12.57398 # Default settings; no argument supplied - for 2x2x2 MAPI
+print("Unitcell taken as ",unitcell)
+
+if (len(sys.argv)>2): # 2nd argument prefix to output files, if supplied
+    prefix=sys.argv[2]+"-"
+else:
+    prefix=""
+
 for datafile in filelist:
     data = numpy.genfromtxt(datafile)
 
-    print(datafile)
+    print(datafile) # For interactive use, so you know what has just been plotted
 
     H,xedges,yedges = numpy.histogram2d(data[:,1],data[:,2],bins=nbins)
     H.shape, xedges.shape, yedges.shape
@@ -37,7 +50,7 @@ for datafile in filelist:
     if (yedges[-1]<1.0): # Bit of a hack - if the data appears to be bounded on [0,1], assume fractional
         extent = [0,1.0,0,1.0] # Fractional coordinates .'. plot 0 to 1
     if (yedges[-1]>5.0): # Worse hack - fixed unit cell, real space units
-        extent = [0,12.57398,0,12.57398]
+        extent = [0,unitcell,0,unitcell]
 
     # General setup of figure...
     fig=plt.figure()
@@ -67,8 +80,8 @@ for datafile in filelist:
 # Or standard 2D histogram with numpy histogrammed data (see above)
 #    plt.imshow(H,extent=extent,interpolation='nearest')
     plt.colorbar()
-    plt.show()
+#    plt.show()
 
     # Pb_I_2dhistogram.py
-    fig.savefig(datafile.split(".")[0]+'_2dhistogram.png')
+    fig.savefig(prefix+datafile.split(".")[0]+'_2dhistogram.png')
     plt.close()
